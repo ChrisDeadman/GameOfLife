@@ -9,19 +9,23 @@
 using namespace sf;
 using namespace std;
 
+typedef shared_ptr<shared_ptr<RectangleShape>[]> DRAWABLE_DIMENSION;
+
 class App {
 private:
-    World *world;
-    unsigned int width;
-    unsigned int height;
+    const shared_ptr<World> world;
+    const unsigned int width;
+    const unsigned int height;
+
+    const shared_ptr<DRAWABLE_DIMENSION[]> drawables;
 
 public:
-    App(World *world, unsigned int width, unsigned int height);
+    App(shared_ptr<World> world, unsigned int width, unsigned int height);
 
     thread run();
 
 private:
-    Drawable *createCell(int row, int column, CellState cellState);
+    void updateCell(int row, int column, CellState cellState);
 };
 
 #endif //GAMEOFLIFE_APP_H

@@ -1,25 +1,19 @@
 #include "World.h"
 
-#include <random>
-
 using namespace std;
 
-World::World(int rows, int columns, RuleSet ruleSet) {
-    this->ruleSet = ruleSet;
-    this->board1 = new Board(rows, columns);
-    this->board2 = new Board(rows, columns);
+World::World(const int rows, const int columns, shared_ptr<RuleSet> const ruleSet) :
+        board1(make_shared<Board>(rows, columns)),
+        board2(make_shared<Board>(rows, columns)),
+        ruleSet(ruleSet) {
+
     this->currentBoard = this->board1;
     this->nextBoard = this->board2;
-
+    
     this->currentBoard->randomize();
 }
 
-World::~World() {
-    delete board1;
-    delete board2;
-}
-
-Board *World::getBoard() {
+const shared_ptr<Board> World::getBoard() {
     return this->currentBoard;
 }
 
@@ -28,7 +22,7 @@ void World::tick() {
         for (int col = 0; col < this->currentBoard->getColumns(); col++) {
             auto aliveNeighbors = this->currentBoard->getAliveNeighbors(row, col);
             auto currentState = this->currentBoard->getCellState(row, col);
-            auto newState = this->ruleSet.evaluateNewState(currentState, aliveNeighbors);
+            auto newState = this->ruleSet->evaluateNewState(currentState, aliveNeighbors);
             this->nextBoard->setCellState(row, col, newState);
         }
     }

@@ -3,29 +3,31 @@
 
 #include "CellState.h"
 
+#include <memory>
+
+using namespace std;
+
+typedef unique_ptr<CellState[]> CELL_STATE_DIMENSION;
+
 class Board {
-
 private:
+    const int rows;
+    const int columns;
 
-    int rows;
-    int columns;
-    CellState **cellStates;
+    const unique_ptr<CELL_STATE_DIMENSION[]> cellStates;
 
 public:
-
     Board(int rows, int columns);
 
-    virtual ~Board();
+    const int getRows() const;
 
-    int getRows();
+    const int getColumns() const;
 
-    int getColumns();
-
-    CellState getCellState(int row, int column);
+    const CellState getCellState(int row, int column);
 
     void setCellState(int row, int column, CellState state);
 
-    unsigned int getAliveNeighbors(int row, int column);
+    const unsigned int getAliveNeighbors(int row, int column);
 
     void randomize();
 };

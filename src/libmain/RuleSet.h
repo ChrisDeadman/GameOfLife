@@ -5,7 +5,7 @@
 
 class RuleSet {
 public:
-    CellState evaluateNewState(CellState currentState, unsigned int aliveNeighbors);
+    const CellState evaluateNewState(CellState currentState, unsigned int aliveNeighbors);
 };
 
 #endif //GAMEOFLIFE_RULESET_H

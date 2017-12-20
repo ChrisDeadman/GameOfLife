@@ -4,55 +4,50 @@
 
 using namespace std;
 
-Board::Board(int rows, int columns) {
-    this->rows = rows;
-    this->columns = columns;
+Board::Board(const int rows, const int columns) :
+        rows(rows),
+        columns(columns),
+        cellStates(unique_ptr<CELL_STATE_DIMENSION[]>(new CELL_STATE_DIMENSION[rows])) {
 
-    this->cellStates = new CellState *[this->rows];
     for (int row = 0; row < this->rows; row++) {
-        this->cellStates[row] = new CellState[this->columns];
+        this->cellStates[row] = CELL_STATE_DIMENSION(new CellState[this->columns]);
         for (int column = 0; column < this->columns; column++) {
             this->cellStates[row][column] = dead;
         }
     }
 }
 
-Board::~Board() {
-    delete this->cellStates;
-}
-
-int Board::getRows() {
+const int Board::getRows() const {
     return rows;
 }
 
-int Board::getColumns() {
+const int Board::getColumns() const {
     return columns;
 }
 
-CellState Board::getCellState(int row, int column) {
+const CellState Board::getCellState(const int row, const int column) {
     return this->cellStates[row][column];
 }
 
-void Board::setCellState(int row, int column, CellState state) {
+void Board::setCellState(const int row, const int column, const CellState state) {
     this->cellStates[row][column] = state;
 }
 
-unsigned int Board::getAliveNeighbors(int row, int column) {
-    const int num_neighbors = 8;
-    const int neighbors[num_neighbors][2] = {{row - 1, column - 1},
-                                             {row - 1, column + 1},
-                                             {row - 1, column},
-                                             {row,     column - 1},
-                                             {row,     column + 1},
-                                             {row + 1, column},
-                                             {row + 1, column + 1},
-                                             {row + 1, column - 1}};
+const unsigned int Board::getAliveNeighbors(const int row, const int column) {
+    const int neighbors[][2] = {{row - 1, column - 1},
+                                {row - 1, column + 1},
+                                {row - 1, column},
+                                {row,     column - 1},
+                                {row,     column + 1},
+                                {row + 1, column},
+                                {row + 1, column + 1},
+                                {row + 1, column - 1}};
 
     unsigned int aliveNeighbors = 0;
 
-    for (int idx = 0; idx < num_neighbors; idx++) {
-        int r = neighbors[idx][0];
-        int c = neighbors[idx][1];
+    for (auto neighbor : neighbors) {
+        int r = neighbor[0];
+        int c = neighbor[1];
 
         if ((r < 0 || r >= this->rows) ||
             (c < 0 || c >= this->columns)) {

@@ -4,14 +4,13 @@ const int NUM_ROWS = 216;
 const int NUM_COLUMNS = 384;
 
 int main() {
-    World world(NUM_ROWS, NUM_COLUMNS, RuleSet());
+    const shared_ptr<RuleSet> ruleSet = make_shared<RuleSet>();
+    const shared_ptr<World> world = make_shared<World>(NUM_ROWS, NUM_COLUMNS, ruleSet);
+    const VideoMode videoMode = VideoMode::getDesktopMode();
 
-    VideoMode videoMode = VideoMode::getDesktopMode();
-
-    App app(&world, videoMode.width, videoMode.height);
+    App app(world, videoMode.width, videoMode.height);
 
     auto thread = app.run();
-
     thread.join();
 
     return 0;

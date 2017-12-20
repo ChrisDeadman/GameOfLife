@@ -4,23 +4,23 @@
 #include "Board.h"
 #include "RuleSet.h"
 
+#include <memory>
+
+using namespace std;
+
 class World {
-
 private:
-    RuleSet ruleSet;
+    const shared_ptr<Board> board1;
+    const shared_ptr<Board> board2;
+    const shared_ptr<RuleSet> ruleSet;
 
-    Board *board1;
-    Board *board2;
-    Board *currentBoard;
-    Board *nextBoard;
+    shared_ptr<Board> currentBoard;
+    shared_ptr<Board> nextBoard;
 
 public:
+    World(int rows, int columns, shared_ptr<RuleSet> ruleSet);
 
-    World(int rows, int columns, RuleSet ruleSet);
-
-    virtual ~World();
-
-    Board *getBoard();
+    const shared_ptr<Board> getBoard();
 
     void tick();
 };
