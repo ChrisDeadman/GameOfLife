@@ -2,6 +2,7 @@
 #define GAMEOFLIFE_APP_H
 
 #include "World.h"
+#include "Matrix2D.h"
 
 #include <thread>
 #include <SFML/Graphics.hpp>
@@ -9,15 +10,13 @@
 using namespace sf;
 using namespace std;
 
-typedef shared_ptr<shared_ptr<RectangleShape>[]> DRAWABLE_DIMENSION;
-
 class App {
 private:
     const shared_ptr<World> world;
     const unsigned int width;
     const unsigned int height;
 
-    const shared_ptr<DRAWABLE_DIMENSION[]> drawables;
+    Matrix2D<shared_ptr<RectangleShape>> drawables;
 
 public:
     App(shared_ptr<World> world, unsigned int width, unsigned int height);
@@ -25,7 +24,7 @@ public:
     thread run();
 
 private:
-    void updateCell(int row, int column, CellState cellState);
+    void updateCells();
 };
 
 #endif //GAMEOFLIFE_APP_H

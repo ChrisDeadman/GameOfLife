@@ -2,26 +2,25 @@
 #define GAMEOFLIFE_BOARD_H
 
 #include "CellState.h"
+#include "Matrix2D.h"
 
 #include <memory>
 
 using namespace std;
 
-typedef unique_ptr<CellState[]> CELL_STATE_DIMENSION;
-
 class Board {
 private:
-    const int rows;
-    const int columns;
+    const unsigned int rows;
+    const unsigned int columns;
 
-    const unique_ptr<CELL_STATE_DIMENSION[]> cellStates;
+    Matrix2D<shared_ptr<CellState>> cellStates;
 
 public:
-    Board(int rows, int columns);
+    Board(unsigned int rows, unsigned int columns);
 
-    const int getRows() const;
+    const unsigned int getRows() const;
 
-    const int getColumns() const;
+    const unsigned int getColumns() const;
 
     const CellState getCellState(int row, int column);
 

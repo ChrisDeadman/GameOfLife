@@ -4,33 +4,32 @@
 
 using namespace std;
 
-Board::Board(const int rows, const int columns) :
+Board::Board(const unsigned int rows, const unsigned int columns) :
         rows(rows),
         columns(columns),
-        cellStates(unique_ptr<CELL_STATE_DIMENSION[]>(new CELL_STATE_DIMENSION[rows])) {
+        cellStates(Matrix2D<shared_ptr<CellState>>(rows, columns)) {
 
     for (int row = 0; row < this->rows; row++) {
-        this->cellStates[row] = CELL_STATE_DIMENSION(new CellState[this->columns]);
         for (int column = 0; column < this->columns; column++) {
-            this->cellStates[row][column] = dead;
+            this->cellStates(row, column) = make_shared<CellState>(dead);
         }
     }
 }
 
-const int Board::getRows() const {
+const unsigned int Board::getRows() const {
     return rows;
 }
 
-const int Board::getColumns() const {
+const unsigned int Board::getColumns() const {
     return columns;
 }
 
 const CellState Board::getCellState(const int row, const int column) {
-    return this->cellStates[row][column];
+    return *this->cellStates(row, column);
 }
 
 void Board::setCellState(const int row, const int column, const CellState state) {
-    this->cellStates[row][column] = state;
+    *this->cellStates(row, column) = state;
 }
 
 const unsigned int Board::getAliveNeighbors(const int row, const int column) {
@@ -53,7 +52,7 @@ const unsigned int Board::getAliveNeighbors(const int row, const int column) {
             (c < 0 || c >= this->columns)) {
             continue;
         }
-        if (this->cellStates[r][c] == alive) {
+        if (*this->cellStates(r, c) == alive) {
             ++aliveNeighbors;
         }
     }
@@ -68,7 +67,7 @@ void Board::randomize() {
 
     for (int row = 0; row < rows; ++row) {
         for (int column = 0; column < columns; ++column) {
-            this->cellStates[row][column] = dis(gen) > 0 ? alive : dead;
+            *this->cellStates(row, column) = dis(gen) > 0 ? alive : dead;
         }
     }
 }
