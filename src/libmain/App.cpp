@@ -46,6 +46,8 @@ thread App::run() {
                 displayBounds.h,
                 SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
         );
+        
+        SDL_GetWindowSize(window, &this->width, &this->height);
 
         auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
