@@ -1,6 +1,7 @@
 #include <cmath>
 #include "App.h"
 #include "TimeUtil.h"
+#include "SFMLUtil.h"
 
 App::App(const shared_ptr<World> world, const unsigned int width, const unsigned int height, const string fontFilePath) :
         world(world),
@@ -24,19 +25,19 @@ thread App::run() {
         fpsText.setFont(font);
         fpsText.setCharacterSize(44);
         fpsText.setPosition(30, 30);
-        fpsText.setFillColor(Color::Red);
+        setColor(fpsText, Color::Magenta);
 
         Text tickDurationText;
         tickDurationText.setFont(font);
         tickDurationText.setCharacterSize(32);
         tickDurationText.setPosition(30, 80);
-        tickDurationText.setFillColor(Color::Red);
+        setColor(tickDurationText, Color::Red);
 
         Text drawDurationText;
         drawDurationText.setFont(font);
         drawDurationText.setCharacterSize(32);
         drawDurationText.setPosition(30, 120);
-        drawDurationText.setFillColor(Color::Red);
+        setColor(drawDurationText, Color::Red);
 
         Clock clock;
 
