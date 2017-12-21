@@ -31,7 +31,12 @@ thread App::run() {
 
     thread thread([this]() {
         SDL_Rect displayBounds{};
+
+#if SDL_VERSION_ATLEAST(2, 0, 5)
         SDL_GetDisplayUsableBounds(0, &displayBounds);
+#else
+        SDL_GetDisplayBounds(0, &displayBounds);
+#endif
 
         auto window = SDL_CreateWindow(
                 "Conway's Game of Life",
