@@ -1,6 +1,6 @@
 #include "Board.h"
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 TEST(Board, AliveNeighborsCaseTopLeft) {
     const int row = 0;

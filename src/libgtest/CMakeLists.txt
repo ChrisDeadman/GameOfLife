@@ -20,15 +20,15 @@ ExternalProject_Get_Property(gtest source_dir binary_dir)
 add_library(${GTEST_LIBRARY_NAME} IMPORTED STATIC GLOBAL)
 add_dependencies(${GTEST_LIBRARY_NAME} gtest)
 
+set(GTEST_INCLUDE_DIRECTORY "${source_dir}/googletest/include")
+
+file(MAKE_DIRECTORY ${GTEST_INCLUDE_DIRECTORY})
+
 set_target_properties(
         ${GTEST_LIBRARY_NAME} PROPERTIES
         "IMPORTED_LOCATION" "${binary_dir}/googlemock/gtest/libgtest.a"
         "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
 )
-
-set(GTEST_INCLUDE_DIRECTORY, "${source_dir}/gtest/googlegtest/include")
-
-file(GLOB MAKE_DIRECTORY ${GTEST_INCLUDE_DIRECTORY})
 
 set_property(
         TARGET ${GTEST_LIBRARY_NAME} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
@@ -41,15 +41,15 @@ set_property(
 add_library(${GMOCK_LIBRARY_NAME} IMPORTED STATIC GLOBAL)
 add_dependencies(${GMOCK_LIBRARY_NAME} gmock)
 
+set(GMOCK_INCLUDE_DIRECTORY "${source_dir}/googlemock/include")
+
+file(MAKE_DIRECTORY ${GMOCK_INCLUDE_DIRECTORY})
+
 set_target_properties(
         ${GMOCK_LIBRARY_NAME} PROPERTIES
         "IMPORTED_LOCATION" "${binary_dir}/googlemock/libgmock.a"
         "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
 )
-
-set(GMOCK_INCLUDE_DIRECTORY, "${source_dir}/gmock/googlemock/include")
-
-file(GLOB MAKE_DIRECTORY ${GMOCK_INCLUDE_DIRECTORY})
 
 set_property(
         TARGET ${GMOCK_LIBRARY_NAME} APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
