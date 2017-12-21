@@ -27,13 +27,24 @@ else ()
 endif ()
 
 # -----------------
-# Require SFML
+# Require SDL2
 # -----------------
-find_package(SFML 2 REQUIRED graphics window network audio system)
-if (SFML_FOUND)
-    include_directories(${SFML_INCLUDE_DIR})
-    target_link_libraries(${LIBRARY_NAME} ${SFML_LIBRARIES})
-    target_link_libraries(${LIBRARY_NAME} ${SFML_DEPENDENCIES})
+find_package(SDL2 REQUIRED)
+if (SDL2_INCLUDE_DIR)
+    include_directories(${SDL2_INCLUDE_DIR})
+    target_link_libraries(${LIBRARY_NAME} ${SDL2_LIBRARY})
 else ()
-    message(SEND_ERROR "SFML library not found. Please set SFML_ROOT.")
+    message(SEND_ERROR "SDL2 library not found!")
+endif ()
+
+# -----------------
+# Require SDL2 TTF
+# -----------------
+find_package(SDL2_TTF REQUIRED)
+if (SDL2_TTF_INCLUDE_DIRS)
+    include_directories(${SDL2_TTF_INCLUDE_DIRS})
+    message(${SDL2_TTF_LIBRARIES})
+    target_link_libraries(${LIBRARY_NAME} ${SDL2_TTF_LIBRARIES})
+else ()
+    message(SEND_ERROR "SDL2 library not found!")
 endif ()

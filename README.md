@@ -9,7 +9,7 @@ Simple implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/C
 ## Dependencies
 * cmake (`apt-get install cmake`)
 * libpthreads (`apt-get install libpthread-stubs0-dev`)
-* libsfml (`apt-get install libsfml-dev`)
+* libsdl2 (`apt install libsdl2-dev libsdl2-ttf-dev`)
 * libgtest (downloaded and compiled automatically)
 
 ## Compiling
@@ -27,6 +27,9 @@ Simple implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/C
 
 ## Tested Operating Systems
 * Linux (tested on Ubuntu 17.10)
+
+## 3rd party credits
+* [Google Open Sans font](https://fonts.google.com/specimen/Open+Sans)
 
 Release notes
 =======================

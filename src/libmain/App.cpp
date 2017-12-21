@@ -1,128 +1,159 @@
 #include <cmath>
 #include "App.h"
-#include "TimeUtil.h"
-#include "SFMLUtil.h"
+#include "SDLUtil.h"
+#include "ChronoClock.h"
 
-App::App(const shared_ptr<World> world, const unsigned int width, const unsigned int height, const string fontFilePath) :
+App::App(const shared_ptr<World> world, const string fontFilePath) :
         world(world),
-        width(width),
-        height(height),
-        fontFilePath(fontFilePath),
         rectangles(createCells(world->getBoard()->getCellStates())) {
+
+    SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
+
+    this->bigFont = TTF_OpenFont(fontFilePath.c_str(), 44);
+    this->smallFont = TTF_OpenFont(fontFilePath.c_str(), 32);
+
+    if (this->bigFont == nullptr || this->smallFont == nullptr) {
+        throw std::invalid_argument("could not load font, check if " + fontFilePath + " exists!");
+    }
+}
+
+App::~App() {
+    TTF_CloseFont(this->bigFont);
+    TTF_CloseFont(this->smallFont);
+
+    TTF_Quit();
+    SDL_Quit();
 }
 
 thread App::run() {
     printf("starting up...\n");
 
     thread thread([this]() {
-        auto window = make_shared<RenderWindow>(VideoMode(this->width, this->height), "Conway's Game of Life");
-        window->setVerticalSyncEnabled(true);
+        SDL_Rect displayBounds{};
+        SDL_GetDisplayUsableBounds(0, &displayBounds);
 
-        Font font;
-        font.loadFromFile(this->fontFilePath);
+        auto window = SDL_CreateWindow(
+                "Conway's Game of Life",
+                displayBounds.x,
+                displayBounds.y,
+                displayBounds.w,
+                displayBounds.h,
+                SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+        );
 
-        Text fpsText;
-        fpsText.setFont(font);
-        fpsText.setCharacterSize(44);
-        fpsText.setPosition(30, 30);
-        setColor(fpsText, Color::Magenta);
-
-        Text tickDurationText;
-        tickDurationText.setFont(font);
-        tickDurationText.setCharacterSize(32);
-        tickDurationText.setPosition(30, 80);
-        setColor(tickDurationText, Color::Red);
-
-        Text drawDurationText;
-        drawDurationText.setFont(font);
-        drawDurationText.setCharacterSize(32);
-        drawDurationText.setPosition(30, 120);
-        setColor(drawDurationText, Color::Red);
-
-        Clock clock;
+        auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
         printf("started.\n");
 
-        while (window->isOpen()) {
-            Time frameDuration = clock.restart();
+        mainLoop(window, renderer);
 
-            Event event{};
-            while (window->pollEvent(event)) {
-                if (event.type == Event::KeyPressed) {
-                    printf("randomizing...\n");
-                    this->world->getBoard()->randomize();
-                }
-
-                if (event.type == Event::Closed) {
-                    window->close();
-                }
-            }
-
-            Time tickDuration = measureDuration(clock, [this]() {
-                this->world->tick();
-            });
-
-            window->clear();
-
-            Time drawDuration = measureDuration(clock, [this, window]() {
-                auto cellStates = world->getBoard()->getCellStates();
-                this->updateCells(cellStates);
-
-                for (int row = 0; row < cellStates->getRows(); row++) {
-                    for (int column = 0; column < cellStates->getColumns(); column++) {
-                        window->draw((*this->rectangles)(row, column));
-                    }
-                }
-            });
-
-            fpsText.setString("FPS: " + to_string((int) round(1.f / frameDuration.asSeconds())));
-            window->draw(fpsText);
-
-            tickDurationText.setString(L"Δt World: " + to_string(tickDuration.asMilliseconds()) + "ms");
-            window->draw(tickDurationText);
-
-            drawDurationText.setString(L"Δt Draw: " + to_string(drawDuration.asMilliseconds()) + "ms");
-            window->draw(drawDurationText);
-
-            window->display();
-        }
         printf("exiting.\n");
+
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
     });
 
     return thread;
 }
 
-shared_ptr<Matrix2D<RectangleShape>> App::createCells(shared_ptr<Matrix2D<CellState>> cellStates) {
-    const unsigned int rows = cellStates->getRows();
-    const unsigned int columns = cellStates->getColumns();
+void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
+    ChronoClock clock;
 
-    return make_shared<Matrix2D<RectangleShape>>(rows, columns);
+    bool quit = false;
+
+    while (!quit) {
+        auto frameDuration = clock.restart();
+
+        SDL_Event event{};
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_ESCAPE:
+                        case SDLK_q:
+                            quit = true;
+                            break;
+                        default:
+                            printf("randomizing...\n");
+                            this->world->getBoard()->randomize();
+                            break;
+                    }
+                    break;
+                case SDL_WINDOWEVENT:
+                    switch (event.window.event) {
+                        case SDL_WINDOWEVENT_RESIZED:
+                            SDL_GetWindowSize(window, &this->width, &this->height);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        auto tickDuration = clock.measureDuration([this]() {
+            this->world->tick();
+        });
+
+        SDL_RenderClear(renderer);
+
+        auto drawDuration = clock.measureDuration([this, renderer]() {
+            auto cellStates = world->getBoard()->getCellStates();
+            this->renderCells(renderer, cellStates);
+        });
+
+        auto fpsText = "FPS: " + to_string((int) round(1000.f / duration_cast<milliseconds>(frameDuration).count()));
+        drawText(renderer, 30, 30, this->bigFont, {255, 0, 255, 0}, fpsText);
+
+        auto tickDurationText = "Δt World: " + to_string(duration_cast<milliseconds>(tickDuration).count()) + "ms";
+        drawText(renderer, 30, 80, this->smallFont, {255, 0, 0, 0}, tickDurationText);
+
+        auto drawDurationText = "Δt Draw: " + to_string(duration_cast<milliseconds>(drawDuration).count()) + "ms";
+        drawText(renderer, 30, 120, this->smallFont, {255, 0, 0, 0}, drawDurationText);
+
+        SDL_RenderPresent(renderer);
+    }
 }
 
-void App::updateCells(shared_ptr<Matrix2D<CellState>> cellStates) {
+shared_ptr<Matrix2D<SDL_Rect>> App::createCells(shared_ptr<Matrix2D<CellState>> cellStates) {
     const unsigned int rows = cellStates->getRows();
     const unsigned int columns = cellStates->getColumns();
 
-    const float rowHeight = (float) this->height / rows;
-    const float colWidth = (float) this->width / columns;
+    return make_shared<Matrix2D<SDL_Rect>>(rows, columns);
+}
+
+void App::renderCells(SDL_Renderer *renderer, shared_ptr<Matrix2D<CellState>> &cellStates) {
+    const unsigned int rows = cellStates->getRows();
+    const unsigned int columns = cellStates->getColumns();
+
+    const auto rowHeight = (int) round((float) this->height / rows);
+    const auto colWidth = (int) round((float) this->width / columns);
 
     for (int row = 0; row < rows; row++) {
         for (int column = 0; column < columns; column++) {
-            const float posX = column * ((float) this->width / columns);
-            const float posY = row * ((float) this->height / rows);
-
             auto &&rect = (*this->rectangles)(row, column);
-            rect.setPosition(posX, posY);
-            rect.setSize(Vector2f(colWidth, rowHeight));
+            rect.x = column * colWidth;
+            rect.y = row * rowHeight;
+            rect.w = colWidth;
+            rect.h = rowHeight;
 
             switch ((*cellStates)(row, column)) {
                 case alive:
-                    rect.setFillColor(Color::Green);
+                    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
                     break;
                 case dead:
-                    rect.setFillColor(Color::Transparent);
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                     break;
             }
+
+            SDL_RenderFillRect(renderer, &rect);
         }
     }
 }

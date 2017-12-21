@@ -5,32 +5,37 @@
 #include "Matrix2D.h"
 
 #include <thread>
-#include <SFML/Graphics.hpp>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
-using namespace sf;
 using namespace std;
 
 class App {
 private:
+    int width;
+    int height;
+
+    TTF_Font *bigFont;
+    TTF_Font *smallFont;
+
     const shared_ptr<World> world;
-
-    const unsigned int width;
-    const unsigned int height;
-    const String fontFilePath;
-
-    shared_ptr<Matrix2D<RectangleShape>> rectangles;
+    shared_ptr<Matrix2D<SDL_Rect>> rectangles;
 
 public:
-    App(shared_ptr<World> world, unsigned int width, unsigned int height, string fontFilePath);
+    App(shared_ptr<World> world, string fontFilePath);
 
     App(const App &that) = delete; // Forbid copying
+
+    ~App();
 
     thread run();
 
 private:
-    shared_ptr<Matrix2D<RectangleShape>> createCells(shared_ptr<Matrix2D<CellState>> cellStates);
+    void mainLoop(SDL_Window *pRenderer, SDL_Renderer *pSDL_renderer);
 
-    void updateCells(shared_ptr<Matrix2D<CellState>> cellStates);
+    shared_ptr<Matrix2D<SDL_Rect>> createCells(shared_ptr<Matrix2D<CellState>> cellStates);
+
+    void renderCells(SDL_Renderer *renderer, shared_ptr<Matrix2D<CellState>> &cellStates);
 };
 
 #endif //GAMEOFLIFE_APP_H
