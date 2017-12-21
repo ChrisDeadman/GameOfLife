@@ -16,11 +16,12 @@ private:
 
     const unsigned int width;
     const unsigned int height;
+    const String fontFilePath;
 
-    shared_ptr<Matrix2D<RectangleShape>> drawables;
+    shared_ptr<Matrix2D<RectangleShape>> rectangles;
 
 public:
-    App(shared_ptr<World> world, unsigned int width, unsigned int height);
+    App(shared_ptr<World> world, unsigned int width, unsigned int height, string fontFilePath);
 
     App(const App &that) = delete; // Forbid copying
 

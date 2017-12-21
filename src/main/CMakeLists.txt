@@ -6,4 +6,6 @@ file(GLOB MAIN_SOURCE_FILES
 
 add_executable(${EXECUTABLE_NAME} ${MAIN_SOURCE_FILES})
 
+configure_file(${CMAKE_SOURCE_DIR}/data/opensans/OpenSans-Regular.ttf OpenSans-Regular.ttf COPYONLY)
+
 target_link_libraries(${EXECUTABLE_NAME} "lib${PROJECT_NAME}")

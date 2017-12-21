@@ -1,10 +1,13 @@
+#include <cmath>
 #include "App.h"
+#include "TimeUtil.h"
 
-App::App(const shared_ptr<World> world, const unsigned int width, const unsigned int height) :
+App::App(const shared_ptr<World> world, const unsigned int width, const unsigned int height, const string fontFilePath) :
         world(world),
         width(width),
         height(height),
-        drawables(createCells(world->getBoard()->getCellStates())) {
+        fontFilePath(fontFilePath),
+        rectangles(createCells(world->getBoard()->getCellStates())) {
 }
 
 thread App::run() {
@@ -12,11 +15,36 @@ thread App::run() {
 
     thread thread([this]() {
         auto window = make_shared<RenderWindow>(VideoMode(this->width, this->height), "Conway's Game of Life");
-        window->setFramerateLimit(60);
+        window->setVerticalSyncEnabled(true);
+
+        Font font;
+        font.loadFromFile(this->fontFilePath);
+
+        Text fpsText;
+        fpsText.setFont(font);
+        fpsText.setCharacterSize(44);
+        fpsText.setPosition(30, 30);
+        fpsText.setFillColor(Color::Red);
+
+        Text tickDurationText;
+        tickDurationText.setFont(font);
+        tickDurationText.setCharacterSize(32);
+        tickDurationText.setPosition(30, 80);
+        tickDurationText.setFillColor(Color::Red);
+
+        Text drawDurationText;
+        drawDurationText.setFont(font);
+        drawDurationText.setCharacterSize(32);
+        drawDurationText.setPosition(30, 120);
+        drawDurationText.setFillColor(Color::Red);
+
+        Clock clock;
 
         printf("started.\n");
 
         while (window->isOpen()) {
+            Time frameDuration = clock.restart();
+
             Event event{};
             while (window->pollEvent(event)) {
                 if (event.type == Event::KeyPressed) {
@@ -29,19 +57,31 @@ thread App::run() {
                 }
             }
 
-            this->world->tick();
-
-            auto cellStates = world->getBoard()->getCellStates();
-
-            this->updateCells(cellStates);
+            Time tickDuration = measureDuration(clock, [this]() {
+                this->world->tick();
+            });
 
             window->clear();
 
-            for (int row = 0; row < cellStates->getRows(); row++) {
-                for (int column = 0; column < cellStates->getColumns(); column++) {
-                    window->draw((*this->drawables)(row, column));
+            Time drawDuration = measureDuration(clock, [this, window]() {
+                auto cellStates = world->getBoard()->getCellStates();
+                this->updateCells(cellStates);
+
+                for (int row = 0; row < cellStates->getRows(); row++) {
+                    for (int column = 0; column < cellStates->getColumns(); column++) {
+                        window->draw((*this->rectangles)(row, column));
+                    }
                 }
-            }
+            });
+
+            fpsText.setString("FPS: " + to_string((int) round(1.f / frameDuration.asSeconds())));
+            window->draw(fpsText);
+
+            tickDurationText.setString(L"Δt World: " + to_string(tickDuration.asMilliseconds()) + "ms");
+            window->draw(tickDurationText);
+
+            drawDurationText.setString(L"Δt Draw: " + to_string(drawDuration.asMilliseconds()) + "ms");
+            window->draw(drawDurationText);
 
             window->display();
         }
@@ -70,7 +110,7 @@ void App::updateCells(shared_ptr<Matrix2D<CellState>> cellStates) {
             const float posX = column * ((float) this->width / columns);
             const float posY = row * ((float) this->height / rows);
 
-            auto &&rect = (*this->drawables)(row, column);
+            auto &&rect = (*this->rectangles)(row, column);
             rect.setPosition(posX, posY);
             rect.setSize(Vector2f(colWidth, rowHeight));
 
@@ -79,7 +119,7 @@ void App::updateCells(shared_ptr<Matrix2D<CellState>> cellStates) {
                     rect.setFillColor(Color::Green);
                     break;
                 case dead:
-                    rect.setFillColor(Color::Black);
+                    rect.setFillColor(Color::Transparent);
                     break;
             }
         }
