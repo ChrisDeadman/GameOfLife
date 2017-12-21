@@ -5,6 +5,10 @@
 
 class RuleSet {
 public:
+    RuleSet() = default;
+
+    RuleSet(const RuleSet &that) = delete; // Forbid copying
+
     const CellState evaluateNewState(CellState currentState, unsigned int aliveNeighbors);
 };
 

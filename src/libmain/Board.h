@@ -13,18 +13,14 @@ private:
     const unsigned int rows;
     const unsigned int columns;
 
-    Matrix2D<shared_ptr<CellState>> cellStates;
+    shared_ptr<Matrix2D<CellState>> cellStates;
 
 public:
     Board(unsigned int rows, unsigned int columns);
 
-    const unsigned int getRows() const;
+    Board(const Board &that) = delete; // Forbid copying
 
-    const unsigned int getColumns() const;
-
-    const CellState getCellState(int row, int column);
-
-    void setCellState(int row, int column, CellState state);
+    const shared_ptr<Matrix2D<CellState>> getCellStates();
 
     const unsigned int getAliveNeighbors(int row, int column);
 

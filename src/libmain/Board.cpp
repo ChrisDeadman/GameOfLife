@@ -7,29 +7,17 @@ using namespace std;
 Board::Board(const unsigned int rows, const unsigned int columns) :
         rows(rows),
         columns(columns),
-        cellStates(Matrix2D<shared_ptr<CellState>>(rows, columns)) {
+        cellStates(make_shared<Matrix2D<CellState>>(rows, columns)) {
 
     for (int row = 0; row < this->rows; row++) {
         for (int column = 0; column < this->columns; column++) {
-            this->cellStates(row, column) = make_shared<CellState>(dead);
+            (*this->cellStates)(row, column) = dead;
         }
     }
 }
 
-const unsigned int Board::getRows() const {
-    return rows;
-}
-
-const unsigned int Board::getColumns() const {
-    return columns;
-}
-
-const CellState Board::getCellState(const int row, const int column) {
-    return *this->cellStates(row, column);
-}
-
-void Board::setCellState(const int row, const int column, const CellState state) {
-    *this->cellStates(row, column) = state;
+const shared_ptr<Matrix2D<CellState>> Board::getCellStates() {
+    return this->cellStates;
 }
 
 const unsigned int Board::getAliveNeighbors(const int row, const int column) {
@@ -52,7 +40,7 @@ const unsigned int Board::getAliveNeighbors(const int row, const int column) {
             (c < 0 || c >= this->columns)) {
             continue;
         }
-        if (*this->cellStates(r, c) == alive) {
+        if ((*this->cellStates)(r, c) == alive) {
             ++aliveNeighbors;
         }
     }
@@ -67,7 +55,7 @@ void Board::randomize() {
 
     for (int row = 0; row < rows; ++row) {
         for (int column = 0; column < columns; ++column) {
-            *this->cellStates(row, column) = dis(gen) > 0 ? alive : dead;
+            (*this->cellStates)(row, column) = dis(gen) > 0 ? alive : dead;
         }
     }
 }

@@ -13,7 +13,7 @@ const CellState reproductionRule(const CellState currentState, const unsigned in
 }
 
 const CellState RuleSet::evaluateNewState(const CellState currentState, const unsigned int aliveNeighbors) {
-    auto newState = currentState;
+    CellState newState = currentState;
     newState = overPopulationRule(newState, aliveNeighbors);
     newState = underPopulationRule(newState, aliveNeighbors);
     newState = reproductionRule(newState, aliveNeighbors);

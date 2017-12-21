@@ -18,7 +18,9 @@ private:
     shared_ptr<Board> nextBoard;
 
 public:
-    World(int rows, int columns, shared_ptr<RuleSet> ruleSet);
+    World(unsigned int rows, unsigned int columns, shared_ptr<RuleSet> ruleSet);
+
+    World(const World &that) = delete; // Forbid copying
 
     const shared_ptr<Board> getBoard();
 

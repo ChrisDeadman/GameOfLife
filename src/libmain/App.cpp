@@ -1,16 +1,10 @@
 #include "App.h"
 
-App::App(shared_ptr<World> const world, const unsigned int width, const unsigned int height) :
+App::App(const shared_ptr<World> world, const unsigned int width, const unsigned int height) :
         world(world),
         width(width),
         height(height),
-        drawables(Matrix2D<shared_ptr<RectangleShape>>(world->getBoard()->getRows(), world->getBoard()->getColumns())) {
-
-    for (int row = 0; row < world->getBoard()->getRows(); row++) {
-        for (int column = 0; column < world->getBoard()->getColumns(); column++) {
-            this->drawables(row, column) = make_shared<RectangleShape>();
-        }
-    }
+        drawables(createCells(world->getBoard()->getCellStates())) {
 }
 
 thread App::run() {
@@ -37,13 +31,15 @@ thread App::run() {
 
             this->world->tick();
 
+            auto cellStates = world->getBoard()->getCellStates();
+
+            this->updateCells(cellStates);
+
             window->clear();
 
-            this->updateCells();
-
-            for (int row = 0; row < world->getBoard()->getRows(); row++) {
-                for (int column = 0; column < world->getBoard()->getColumns(); column++) {
-                    window->draw(*this->drawables(row, column));
+            for (int row = 0; row < cellStates->getRows(); row++) {
+                for (int column = 0; column < cellStates->getColumns(); column++) {
+                    window->draw((*this->drawables)(row, column));
                 }
             }
 
@@ -55,25 +51,35 @@ thread App::run() {
     return thread;
 }
 
-void App::updateCells() {
-    const float rowHeight = (float) this->height / world->getBoard()->getRows();
-    const float colWidth = (float) this->width / world->getBoard()->getColumns();
+shared_ptr<Matrix2D<RectangleShape>> App::createCells(shared_ptr<Matrix2D<CellState>> cellStates) {
+    const unsigned int rows = cellStates->getRows();
+    const unsigned int columns = cellStates->getColumns();
 
-    for (int row = 0; row < world->getBoard()->getRows(); row++) {
-        for (int column = 0; column < world->getBoard()->getColumns(); column++) {
-            const float posX = column * ((float) this->width / world->getBoard()->getColumns());
-            const float posY = row * ((float) this->height / world->getBoard()->getRows());
+    return make_shared<Matrix2D<RectangleShape>>(rows, columns);
+}
 
-            auto rect = this->drawables(row, column);
-            rect->setPosition(posX, posY);
-            rect->setSize(Vector2f(colWidth, rowHeight));
+void App::updateCells(shared_ptr<Matrix2D<CellState>> cellStates) {
+    const unsigned int rows = cellStates->getRows();
+    const unsigned int columns = cellStates->getColumns();
 
-            switch (world->getBoard()->getCellState(row, column)) {
+    const float rowHeight = (float) this->height / rows;
+    const float colWidth = (float) this->width / columns;
+
+    for (int row = 0; row < rows; row++) {
+        for (int column = 0; column < columns; column++) {
+            const float posX = column * ((float) this->width / columns);
+            const float posY = row * ((float) this->height / rows);
+
+            auto &&rect = (*this->drawables)(row, column);
+            rect.setPosition(posX, posY);
+            rect.setSize(Vector2f(colWidth, rowHeight));
+
+            switch ((*cellStates)(row, column)) {
                 case alive:
-                    rect->setFillColor(Color::Green);
+                    rect.setFillColor(Color::Green);
                     break;
                 case dead:
-                    rect->setFillColor(Color::Black);
+                    rect.setFillColor(Color::Black);
                     break;
             }
         }

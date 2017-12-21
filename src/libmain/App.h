@@ -13,18 +13,23 @@ using namespace std;
 class App {
 private:
     const shared_ptr<World> world;
+
     const unsigned int width;
     const unsigned int height;
 
-    Matrix2D<shared_ptr<RectangleShape>> drawables;
+    shared_ptr<Matrix2D<RectangleShape>> drawables;
 
 public:
     App(shared_ptr<World> world, unsigned int width, unsigned int height);
 
+    App(const App &that) = delete; // Forbid copying
+
     thread run();
 
 private:
-    void updateCells();
+    shared_ptr<Matrix2D<RectangleShape>> createCells(shared_ptr<Matrix2D<CellState>> cellStates);
+
+    void updateCells(shared_ptr<Matrix2D<CellState>> cellStates);
 };
 
 #endif //GAMEOFLIFE_APP_H

@@ -17,6 +17,16 @@ public:
         data.resize(rows * columns);
     }
 
+    Matrix2D(const Matrix2D &that) = delete; // Forbid copying
+
+    const unsigned int getRows() const {
+        return rows;
+    }
+
+    const unsigned int getColumns() const {
+        return columns;
+    }
+
     T &operator()(const int row, const int column) {
         if ((row < 0) || (row >= rows) || (column < 0) || (column >= columns)) {
             throw std::out_of_range("row/column out of bounds");
