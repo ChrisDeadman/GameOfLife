@@ -7,14 +7,19 @@ App::App(const shared_ptr<World> world, const string fontFilePath) :
         world(world),
         rectangles(createCells(world->getBoard()->getCellStates())) {
 
-    SDL_Init(SDL_INIT_VIDEO);
-    TTF_Init();
+    if (SDL_Init(SDL_INIT_VIDEO)) {
+        throw runtime_error("could not initialize SDL2");
+    }
+
+    if (TTF_Init()) {
+        throw runtime_error("could not initialize SDL2_TTF");
+    }
 
     this->bigFont = TTF_OpenFont(fontFilePath.c_str(), 44);
     this->smallFont = TTF_OpenFont(fontFilePath.c_str(), 32);
 
     if (this->bigFont == nullptr || this->smallFont == nullptr) {
-        throw std::invalid_argument("could not load font, check if " + fontFilePath + " exists!");
+        throw invalid_argument("could not load font, check if " + fontFilePath + " exists!");
     }
 }
 
@@ -46,10 +51,17 @@ thread App::run() {
                 displayBounds.h,
                 SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
         );
-        
+        if (window == nullptr) {
+            throw runtime_error("Could not create SDL window.");
+        }
+
         SDL_GetWindowSize(window, &this->width, &this->height);
 
         auto renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        if (renderer == nullptr) {
+            throw runtime_error("Could not create SDL renderer.");
+        }
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
         printf("started.\n");
@@ -117,13 +129,13 @@ void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
         });
 
         auto fpsText = "FPS: " + to_string((int) round(1000.f / duration_cast<milliseconds>(frameDuration).count()));
-        drawText(renderer, 30, 30, this->bigFont, {255, 0, 255, 0}, fpsText);
+        drawText(renderer, 30, 30, this->bigFont, {255, 0, 255, 255}, fpsText);
 
         auto tickDurationText = "Δt World: " + to_string(duration_cast<milliseconds>(tickDuration).count()) + "ms";
-        drawText(renderer, 30, 80, this->smallFont, {255, 0, 0, 0}, tickDurationText);
+        drawText(renderer, 30, 80, this->smallFont, {255, 0, 0, 255}, tickDurationText);
 
         auto drawDurationText = "Δt Draw: " + to_string(duration_cast<milliseconds>(drawDuration).count()) + "ms";
-        drawText(renderer, 30, 120, this->smallFont, {255, 0, 0, 0}, drawDurationText);
+        drawText(renderer, 30, 120, this->smallFont, {255, 0, 0, 255}, drawDurationText);
 
         SDL_RenderPresent(renderer);
     }
