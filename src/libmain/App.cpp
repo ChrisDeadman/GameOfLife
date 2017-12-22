@@ -4,8 +4,7 @@
 #include "ChronoClock.h"
 
 App::App(const shared_ptr<World> world, const string fontFilePath) :
-        world(world),
-        rectangles(createCells(world->getBoard()->getCellStates())) {
+        world(world) {
 
     if (SDL_Init(SDL_INIT_VIDEO)) {
         throw runtime_error("could not initialize SDL2");
@@ -141,13 +140,6 @@ void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
     }
 }
 
-shared_ptr<Matrix2D<SDL_Rect>> App::createCells(shared_ptr<Matrix2D<CellState>> cellStates) {
-    const unsigned int rows = cellStates->getRows();
-    const unsigned int columns = cellStates->getColumns();
-
-    return make_shared<Matrix2D<SDL_Rect>>(rows, columns);
-}
-
 void App::renderCells(SDL_Renderer *renderer, shared_ptr<Matrix2D<CellState>> &cellStates) {
     const unsigned int rows = cellStates->getRows();
     const unsigned int columns = cellStates->getColumns();
@@ -155,9 +147,10 @@ void App::renderCells(SDL_Renderer *renderer, shared_ptr<Matrix2D<CellState>> &c
     const auto rowHeight = (int) round((float) this->height / rows);
     const auto colWidth = (int) round((float) this->width / columns);
 
+    SDL_Rect rect{};
+
     for (int row = 0; row < rows; row++) {
         for (int column = 0; column < columns; column++) {
-            auto &&rect = (*this->rectangles)(row, column);
             rect.x = column * colWidth;
             rect.y = row * rowHeight;
             rect.w = colWidth;

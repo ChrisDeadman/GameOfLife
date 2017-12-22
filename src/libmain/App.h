@@ -19,8 +19,6 @@ private:
     TTF_Font *smallFont;
 
     const shared_ptr<World> world;
-    shared_ptr<Matrix2D<SDL_Rect>> rectangles;
-
 public:
     App(shared_ptr<World> world, string fontFilePath);
 
@@ -32,8 +30,6 @@ public:
 
 private:
     void mainLoop(SDL_Window *pRenderer, SDL_Renderer *pSDL_renderer);
-
-    shared_ptr<Matrix2D<SDL_Rect>> createCells(shared_ptr<Matrix2D<CellState>> cellStates);
 
     void renderCells(SDL_Renderer *renderer, shared_ptr<Matrix2D<CellState>> &cellStates);
 };
