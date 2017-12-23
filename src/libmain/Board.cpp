@@ -1,6 +1,7 @@
 #include "Board.h"
 
 #include <random>
+#include <ctime>
 
 using namespace std;
 
