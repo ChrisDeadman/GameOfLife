@@ -5,8 +5,13 @@
 #include "Matrix2D.h"
 
 #include <thread>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+
+#ifndef _GLIBCXX_HAS_GTHREADS
+#include <mingw.thread.h>
+#endif
+
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 using namespace std;
 
