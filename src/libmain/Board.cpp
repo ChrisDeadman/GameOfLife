@@ -49,9 +49,10 @@ const unsigned int Board::getAliveNeighbors(const int row, const int column) {
 }
 
 void Board::randomize() {
-    random_device rd;                      // used to obtain a seed for the random number engine
-    mt19937 gen(rd());                     // standard mersenne_twister_engine seeded with rd()
-    uniform_int_distribution<> dis(0, 1);  // uniform distribution >= 0 and <= 1
+    // standard mersenne_twister_engine seeded with the current time
+    mt19937 gen(static_cast<unsigned long>(time(nullptr)));
+    // uniform distribution >= 0 and <= 1
+    uniform_int_distribution<> dis(0, 1);
 
     for (int row = 0; row < rows; ++row) {
         for (int column = 0; column < columns; ++column) {
