@@ -31,8 +31,9 @@ void World::tick() {
         for (int row = firstRow; row < nextRow; row++) {
             for (int col = 0; col < columns; col++) {
                 auto aliveNeighbors = this->currentBoard->getAliveNeighbors(row, col);
-                auto currentState = (*currentCellStates)(row, col);
-                (*nextCellStates)(row, col) = this->ruleSet->evaluateNewState(currentState, aliveNeighbors);
+                auto currentState = currentCellStates->getValue(row, col);
+                auto newState = this->ruleSet->evaluateNewState(currentState, aliveNeighbors);
+                nextCellStates->setValue(row, col, newState);
             }
         }
     });

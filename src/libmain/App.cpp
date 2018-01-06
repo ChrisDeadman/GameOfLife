@@ -187,7 +187,7 @@ void App::renderCells(SDL_Renderer *renderer, shared_ptr<Matrix2D<CellState>> &c
             rect.w = colWidth;
             rect.h = rowHeight;
 
-            switch ((*cellStates)(row, column)) {
+            switch (cellStates->getValue(row, column)) {
                 case alive:
                     SDL_RenderFillRect(renderer, &rect);
                     break;

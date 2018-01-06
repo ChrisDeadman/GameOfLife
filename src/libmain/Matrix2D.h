@@ -27,12 +27,24 @@ public:
         return columns;
     }
 
-    T &operator()(const int row, const int column) {
-        if ((row < 0) || (row >= rows) || (column < 0) || (column >= columns)) {
+    const bool contains(const int row, const int column) const {
+        return (row >= 0) && (row < rows) && (column >= 0) && (column < columns);
+    }
+
+    T &getValue(const int row, const int column) {
+        if (!contains(row, column)) {
             throw std::out_of_range("row/column out of bounds");
         }
 
         return data[(row * columns) + column];
+    }
+
+    void setValue(const int row, const int column, const T &value) {
+        if (!contains(row, column)) {
+            throw std::out_of_range("row/column out of bounds");
+        }
+
+        data[(row * columns) + column] = value;
     }
 };
 

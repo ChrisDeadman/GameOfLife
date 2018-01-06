@@ -1,7 +1,6 @@
 #include "Board.h"
 
 #include <random>
-#include <ctime>
 
 using namespace std;
 
@@ -12,7 +11,7 @@ Board::Board(const unsigned int rows, const unsigned int columns) :
 
     for (int row = 0; row < this->rows; row++) {
         for (int column = 0; column < this->columns; column++) {
-            (*this->cellStates)(row, column) = dead;
+            this->cellStates->setValue(row, column, dead);
         }
     }
 }
@@ -41,7 +40,7 @@ const unsigned int Board::getAliveNeighbors(const int row, const int column) {
             (c < 0 || c >= this->columns)) {
             continue;
         }
-        if ((*this->cellStates)(r, c) == alive) {
+        if (this->cellStates->getValue(r, c) == alive) {
             ++aliveNeighbors;
         }
     }
@@ -57,7 +56,8 @@ void Board::randomize(long seed) {
 
     for (int row = 0; row < rows; ++row) {
         for (int column = 0; column < columns; ++column) {
-            (*this->cellStates)(row, column) = dis(gen) > 0 ? alive : dead;
+            auto state = dis(gen) > 0 ? alive : dead;
+            this->cellStates->setValue(row, column, state);
         }
     }
 }
