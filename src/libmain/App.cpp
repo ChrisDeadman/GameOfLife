@@ -138,7 +138,7 @@ void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
         auto tickDuration = accumulate(tickDurations.begin(), tickDurations.end(), 0U) / tickDurations.size();
         auto drawDuration = accumulate(drawDurations.begin(), drawDurations.end(), 0U) / drawDurations.size();
 
-        auto fpsText = "FPS: " + to_string((int) round(10e6 / frameDuration));
+        auto fpsText = "FPS: " + to_string((int) round(1e6 / frameDuration));
         drawText(renderer, 30, 30, this->bigFont, {255, 0, 255, 255}, fpsText);
 
         auto tickDurationText = "Δt World: " + to_string((unsigned int) tickDuration) + "us";
