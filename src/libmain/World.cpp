@@ -2,10 +2,11 @@
 
 using namespace std;
 
-World::World(const unsigned int rows, const unsigned int columns, const shared_ptr<RuleSet> ruleSet) :
+World::World(const unsigned int rows, const unsigned int columns, const shared_ptr<RuleSet> ruleSet, const shared_ptr<WorkerPool> workerPool) :
         board1(make_shared<Board>(rows, columns)),
         board2(make_shared<Board>(rows, columns)),
-        ruleSet(ruleSet) {
+        ruleSet(ruleSet),
+        workerPool(workerPool) {
 
     this->currentBoard = this->board1;
     this->nextBoard = this->board2;
@@ -26,13 +27,15 @@ void World::tick() {
     auto rows = currentCellStates->getRows();
     auto columns = currentCellStates->getColumns();
 
-    for (int row = 0; row < rows; row++) {
-        for (int col = 0; col < columns; col++) {
-            auto aliveNeighbors = this->currentBoard->getAliveNeighbors(row, col);
-            auto currentState = (*currentCellStates)(row, col);
-            (*nextCellStates)(row, col) = this->ruleSet->evaluateNewState(currentState, aliveNeighbors);
+    this->workerPool->parallel_for(0U, rows, [&](unsigned int firstRow, unsigned int nextRow) {
+        for (int row = firstRow; row < nextRow; row++) {
+            for (int col = 0; col < columns; col++) {
+                auto aliveNeighbors = this->currentBoard->getAliveNeighbors(row, col);
+                auto currentState = (*currentCellStates)(row, col);
+                (*nextCellStates)(row, col) = this->ruleSet->evaluateNewState(currentState, aliveNeighbors);
+            }
         }
-    }
+    });
 
     auto oldBoard = this->currentBoard;
     this->currentBoard = this->nextBoard;
