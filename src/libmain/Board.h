@@ -24,7 +24,7 @@ public:
 
     const unsigned int getAliveNeighbors(int row, int column);
 
-    void randomize();
+    void randomize(long seed);
 };
 
 #endif //GAMEOFLIFE_BOARD_H

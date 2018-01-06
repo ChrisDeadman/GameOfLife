@@ -49,9 +49,9 @@ const unsigned int Board::getAliveNeighbors(const int row, const int column) {
     return aliveNeighbors;
 }
 
-void Board::randomize() {
-    // standard mersenne_twister_engine seeded with the current time
-    mt19937 gen(static_cast<unsigned long>(time(nullptr)));
+void Board::randomize(long seed) {
+    // standard mersenne_twister_engine
+    mt19937 gen(static_cast<unsigned long>(seed));
     // uniform distribution >= 0 and <= 1
     uniform_int_distribution<> dis(0, 1);
 

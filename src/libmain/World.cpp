@@ -10,7 +10,9 @@ World::World(const unsigned int rows, const unsigned int columns, const shared_p
     this->currentBoard = this->board1;
     this->nextBoard = this->board2;
 
-    this->currentBoard->randomize();
+    auto seed = time(nullptr);
+    this->currentBoard->randomize(seed);
+    this->nextBoard->randomize(seed + 1);
 }
 
 const shared_ptr<Board> World::getBoard() {

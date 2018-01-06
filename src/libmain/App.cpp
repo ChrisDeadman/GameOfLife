@@ -107,7 +107,7 @@ void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
                             break;
                         default:
                             printf("randomizing...\n");
-                            this->world->getBoard()->randomize();
+                            this->world->getBoard()->randomize(time(nullptr));
                             break;
                     }
                     break;
