@@ -80,6 +80,7 @@ thread App::run() {
 void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
     ChronoClock clock;
     bool quit = false;
+    int vsync = 0;
 
     const unsigned int measureFrameCount = 60;
     vector<unsigned int> frameDurations;
@@ -97,6 +98,10 @@ void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
                         case SDLK_ESCAPE:
                         case SDLK_q:
                             quit = true;
+                            break;
+                        case SDLK_v:
+                            vsync ^= 1;
+                            SDL_GL_SetSwapInterval(vsync);
                             break;
                         default:
                             printf("randomizing...\n");
