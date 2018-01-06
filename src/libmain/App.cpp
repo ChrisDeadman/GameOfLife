@@ -120,6 +120,8 @@ void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
             this->world->tick();
         });
 
+        // Clear with black background
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
         auto drawDuration = clock.measureDuration([this, renderer]() {
@@ -149,6 +151,9 @@ void App::renderCells(SDL_Renderer *renderer, shared_ptr<Matrix2D<CellState>> &c
 
     SDL_Rect rect{};
 
+    // Draw living cells in green
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+
     for (int row = 0; row < rows; row++) {
         for (int column = 0; column < columns; column++) {
             rect.x = column * colWidth;
@@ -158,14 +163,11 @@ void App::renderCells(SDL_Renderer *renderer, shared_ptr<Matrix2D<CellState>> &c
 
             switch ((*cellStates)(row, column)) {
                 case alive:
-                    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                    SDL_RenderFillRect(renderer, &rect);
                     break;
                 case dead:
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                     break;
             }
-
-            SDL_RenderFillRect(renderer, &rect);
         }
     }
 }
