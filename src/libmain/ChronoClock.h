@@ -11,6 +11,10 @@ private:
     system_clock::time_point startTime = system_clock::now();
 
 public:
+    ChronoClock() = default;
+
+    ChronoClock(const ChronoClock &that) = delete; // Forbid copying
+
     system_clock::duration restart() {
         auto elapsedTime = this->getElapsedTime();
         startTime = system_clock::now();

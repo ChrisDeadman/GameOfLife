@@ -6,10 +6,6 @@
 
 #include <thread>
 
-#ifndef _GLIBCXX_HAS_GTHREADS
-#include <mingw.thread.h>
-#endif
-
 #include <SDL.h>
 #include <SDL_ttf.h>
 

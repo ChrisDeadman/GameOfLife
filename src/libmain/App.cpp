@@ -1,4 +1,5 @@
 #include <cmath>
+#include <numeric>
 #include "App.h"
 #include "SDLUtil.h"
 #include "ChronoClock.h"
@@ -78,11 +79,15 @@ thread App::run() {
 
 void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
     ChronoClock clock;
-
     bool quit = false;
 
+    const unsigned int measureFrameCount = 60;
+    vector<unsigned int> frameDurations;
+    vector<unsigned int> tickDurations;
+    vector<unsigned int> drawDurations;
+
     while (!quit) {
-        auto frameDuration = clock.restart();
+        frameDurations.emplace_back(duration_cast<microseconds>(clock.restart()).count());
 
         SDL_Event event{};
         while (SDL_PollEvent(&event)) {
@@ -116,27 +121,37 @@ void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
             }
         }
 
-        auto tickDuration = clock.measureDuration([this]() {
+        tickDurations.emplace_back(duration_cast<microseconds>(clock.measureDuration([this]() {
             this->world->tick();
-        });
+        })).count());
 
         // Clear with black background
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        auto drawDuration = clock.measureDuration([this, renderer]() {
+        drawDurations.emplace_back(duration_cast<microseconds>(clock.measureDuration([this, renderer]() {
             auto cellStates = world->getBoard()->getCellStates();
             this->renderCells(renderer, cellStates);
-        });
+        })).count());
 
-        auto fpsText = "FPS: " + to_string((int) round(1000.f / duration_cast<milliseconds>(frameDuration).count()));
+        auto frameDuration = accumulate(frameDurations.begin(), frameDurations.end(), 0U) / frameDurations.size();
+        auto tickDuration = accumulate(tickDurations.begin(), tickDurations.end(), 0U) / tickDurations.size();
+        auto drawDuration = accumulate(drawDurations.begin(), drawDurations.end(), 0U) / drawDurations.size();
+
+        auto fpsText = "FPS: " + to_string((int) round(10e6 / frameDuration));
         drawText(renderer, 30, 30, this->bigFont, {255, 0, 255, 255}, fpsText);
 
-        auto tickDurationText = "Δt World: " + to_string(duration_cast<milliseconds>(tickDuration).count()) + "ms";
+        auto tickDurationText = "Δt World: " + to_string((unsigned int) tickDuration) + "us";
         drawText(renderer, 30, 80, this->smallFont, {255, 0, 0, 255}, tickDurationText);
 
-        auto drawDurationText = "Δt Draw: " + to_string(duration_cast<milliseconds>(drawDuration).count()) + "ms";
+        auto drawDurationText = "Δt Draw: " + to_string((unsigned int) drawDuration) + "us";
         drawText(renderer, 30, 120, this->smallFont, {255, 0, 0, 255}, drawDurationText);
+
+        if (frameDurations.size() >= measureFrameCount) {
+            frameDurations.erase(frameDurations.begin());
+            tickDurations.erase(tickDurations.begin());
+            drawDurations.erase(drawDurations.begin());
+        }
 
         SDL_RenderPresent(renderer);
     }
