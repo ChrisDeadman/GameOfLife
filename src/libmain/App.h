@@ -17,6 +17,7 @@ private:
     int height;
 
     TTF_Font *bigFont;
+    TTF_Font *mediumFont;
     TTF_Font *smallFont;
 
     const shared_ptr<World> world;

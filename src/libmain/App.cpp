@@ -16,15 +16,17 @@ App::App(const shared_ptr<World> world, const string fontFilePath) :
     }
 
     this->bigFont = TTF_OpenFont(fontFilePath.c_str(), 44);
-    this->smallFont = TTF_OpenFont(fontFilePath.c_str(), 32);
+    this->mediumFont = TTF_OpenFont(fontFilePath.c_str(), 32);
+    this->smallFont = TTF_OpenFont(fontFilePath.c_str(), 24);
 
-    if (this->bigFont == nullptr || this->smallFont == nullptr) {
+    if (this->bigFont == nullptr || this->mediumFont == nullptr || this->smallFont == nullptr) {
         throw invalid_argument("could not load font, check if " + fontFilePath + " exists!");
     }
 }
 
 App::~App() {
     TTF_CloseFont(this->bigFont);
+    TTF_CloseFont(this->mediumFont);
     TTF_CloseFont(this->smallFont);
 
     TTF_Quit();
@@ -147,10 +149,14 @@ void App::mainLoop(SDL_Window *window, SDL_Renderer *renderer) {
         drawText(renderer, 30, 30, this->bigFont, {255, 0, 255, 255}, fpsText);
 
         auto tickDurationText = "Δt World: " + to_string((unsigned int) tickDuration) + "us";
-        drawText(renderer, 30, 80, this->smallFont, {255, 0, 0, 255}, tickDurationText);
+        drawText(renderer, 30, 80, this->mediumFont, {255, 0, 0, 255}, tickDurationText);
 
         auto drawDurationText = "Δt Draw: " + to_string((unsigned int) drawDuration) + "us";
-        drawText(renderer, 30, 120, this->smallFont, {255, 0, 0, 255}, drawDurationText);
+        drawText(renderer, 30, 120, this->mediumFont, {255, 0, 0, 255}, drawDurationText);
+
+        drawText(renderer, 30, 180, this->smallFont, {255, 255, 255, 255}, "any key: randomize");
+        drawText(renderer, 30, 210, this->smallFont, {255, 255, 255, 255}, "v: toggle vsync");
+        drawText(renderer, 30, 240, this->smallFont, {255, 255, 255, 255}, "q: quit");
 
         if (frameDurations.size() >= measureFrameCount) {
             frameDurations.erase(frameDurations.begin());
