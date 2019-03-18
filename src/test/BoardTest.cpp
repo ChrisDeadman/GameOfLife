@@ -10,36 +10,36 @@ TEST(Board, AliveNeighborsCaseTopLeft) {
     int expected = 0;
 
     // Top Left cell
-    (*board.getCellStates())(row, column) = alive;
+    board.getCellStates()->setValue(row, column, alive);
     EXPECT_EQ(0, board.getAliveNeighbors(row, column));
 
     // Neighbors
     //
-    //(*board.getCellStates())(0, 0) = alive;
+    //board.getCellStates()->setValue(0, 0, alive);
     //EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(0, 1) = alive;
+    board.getCellStates()->setValue(0, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(0, 2) = alive;
+    board.getCellStates()->setValue(0, 2, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 0) = alive;
+    board.getCellStates()->setValue(1, 0, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 1) = alive;
+    board.getCellStates()->setValue(1, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 2) = alive;
+    board.getCellStates()->setValue(1, 2, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 0) = alive;
+    board.getCellStates()->setValue(2, 0, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 1) = alive;
+    board.getCellStates()->setValue(2, 1, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 2) = alive;
+    board.getCellStates()->setValue(2, 2, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 }
 
@@ -51,36 +51,36 @@ TEST(Board, AliveNeighborsCaseTopRight) {
     int expected = 0;
 
     // Top Left cell
-    (*board.getCellStates())(row, column) = alive;
+    board.getCellStates()->setValue(row, column, alive);
     EXPECT_EQ(0, board.getAliveNeighbors(row, column));
 
     // Neighbors
     //
-    (*board.getCellStates())(0, 0) = alive;
+    board.getCellStates()->setValue(0, 0, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(0, 1) = alive;
+    board.getCellStates()->setValue(0, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    //(*board.getCellStates())(0, 2) = alive;
+    //board.getCellStates()->setValue(0, 2, alive);
     //EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 0) = alive;
+    board.getCellStates()->setValue(1, 0, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 1) = alive;
+    board.getCellStates()->setValue(1, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 2) = alive;
+    board.getCellStates()->setValue(1, 2, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 0) = alive;
+    board.getCellStates()->setValue(2, 0, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 1) = alive;
+    board.getCellStates()->setValue(2, 1, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 2) = alive;
+    board.getCellStates()->setValue(2, 2, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 }
 
@@ -92,36 +92,36 @@ TEST(Board, AliveNeighborsCaseCenter) {
     int expected = 0;
 
     // Top Left cell
-    (*board.getCellStates())(row, column) = alive;
+    board.getCellStates()->setValue(row, column, alive);
     EXPECT_EQ(0, board.getAliveNeighbors(row, column));
 
     // Neighbors
     //
-    (*board.getCellStates())(0, 0) = alive;
+    board.getCellStates()->setValue(0, 0, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(0, 1) = alive;
+    board.getCellStates()->setValue(0, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(0, 2) = alive;
+    board.getCellStates()->setValue(0, 2, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 0) = alive;
+    board.getCellStates()->setValue(1, 0, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    //(*board.getCellStates())(1, 1) = alive;
+    //board.getCellStates()->setValue(1, 1, alive);
     //EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 2) = alive;
+    board.getCellStates()->setValue(1, 2, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 0) = alive;
+    board.getCellStates()->setValue(2, 0, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 1) = alive;
+    board.getCellStates()->setValue(2, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 2) = alive;
+    board.getCellStates()->setValue(2, 2, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 }
 
@@ -133,36 +133,36 @@ TEST(Board, AliveNeighborsCaseBottomLeft) {
     int expected = 0;
 
     // Top Left cell
-    (*board.getCellStates())(row, column) = alive;
+    board.getCellStates()->setValue(row, column, alive);
     EXPECT_EQ(0, board.getAliveNeighbors(row, column));
 
     // Neighbors
     //
-    (*board.getCellStates())(0, 0) = alive;
+    board.getCellStates()->setValue(0, 0, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(0, 1) = alive;
+    board.getCellStates()->setValue(0, 1, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(0, 2) = alive;
+    board.getCellStates()->setValue(0, 2, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 0) = alive;
+    board.getCellStates()->setValue(1, 0, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 1) = alive;
+    board.getCellStates()->setValue(1, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 2) = alive;
+    board.getCellStates()->setValue(1, 2, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    //(*board.getCellStates())(2, 0) = alive;
+    //board.getCellStates()->setValue(2, 0, alive);
     //EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 1) = alive;
+    board.getCellStates()->setValue(2, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 2) = alive;
+    board.getCellStates()->setValue(2, 2, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 }
 
@@ -174,35 +174,35 @@ TEST(Board, AliveNeighborsCaseBottomRight) {
     int expected = 0;
 
     // Top Left cell
-    (*board.getCellStates())(row, column) = alive;
+    board.getCellStates()->setValue(row, column, alive);
     EXPECT_EQ(0, board.getAliveNeighbors(row, column));
 
     // Neighbors
     //
-    (*board.getCellStates())(0, 0) = alive;
+    board.getCellStates()->setValue(0, 0, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(0, 1) = alive;
+    board.getCellStates()->setValue(0, 1, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(0, 2) = alive;
+    board.getCellStates()->setValue(0, 2, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 0) = alive;
+    board.getCellStates()->setValue(1, 0, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 1) = alive;
+    board.getCellStates()->setValue(1, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(1, 2) = alive;
+    board.getCellStates()->setValue(1, 2, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 0) = alive;
+    board.getCellStates()->setValue(2, 0, alive);
     EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 
-    (*board.getCellStates())(2, 1) = alive;
+    board.getCellStates()->setValue(2, 1, alive);
     EXPECT_EQ(++expected, board.getAliveNeighbors(row, column));
 
-    //(*board.getCellStates())(2, 2) = alive;
+    //board.getCellStates()->setValue(2, 2, alive);
     //EXPECT_EQ(expected, board.getAliveNeighbors(row, column));
 }

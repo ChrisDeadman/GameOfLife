@@ -26,7 +26,7 @@ file(MAKE_DIRECTORY ${GTEST_INCLUDE_DIRECTORY})
 
 set_target_properties(
         ${GTEST_LIBRARY_NAME} PROPERTIES
-        "IMPORTED_LOCATION" "${binary_dir}/googlemock/gtest/libgtest.a"
+        "IMPORTED_LOCATION" "${binary_dir}/../gtest-build/lib/libgtest.a"
         "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
 )
 
@@ -47,7 +47,7 @@ file(MAKE_DIRECTORY ${GMOCK_INCLUDE_DIRECTORY})
 
 set_target_properties(
         ${GMOCK_LIBRARY_NAME} PROPERTIES
-        "IMPORTED_LOCATION" "${binary_dir}/googlemock/libgmock.a"
+        "IMPORTED_LOCATION" "${binary_dir}/../gtest-build/lib/libgmock.a"
         "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
 )
 
