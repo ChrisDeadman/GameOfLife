@@ -4,7 +4,15 @@ set(PROJECT_NAME "gameOfLife")
 
 project(${PROJECT_NAME})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+if (CMAKE_BUILD_TYPE MATCHES "")
+    set(CMAKE_BUILD_TYPE "RELEASE")
+endif()
+
+message("CMAKE_BUILD_TYPE is '${CMAKE_BUILD_TYPE}'")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 

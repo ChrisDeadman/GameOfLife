@@ -180,15 +180,14 @@ void App::renderCells(SDL_Renderer *renderer, shared_ptr<Matrix2D<CellState>> &c
     // Draw living cells in green
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 
-    for (int row = 0; row < rows; row++) {
-        for (int column = 0; column < columns; column++) {
-            rect.x = column * colWidth;
-            rect.y = row * rowHeight;
-            rect.w = colWidth;
-            rect.h = rowHeight;
-
+    for (unsigned int row = 0; row < rows; row++) {
+        for (unsigned int column = 0; column < columns; column++) {
             switch (cellStates->getValue(row, column)) {
                 case alive:
+                    rect.x = column * colWidth;
+                    rect.y = row * rowHeight;
+                    rect.w = colWidth;
+                    rect.h = rowHeight;
                     SDL_RenderFillRect(renderer, &rect);
                     break;
                 case dead:
