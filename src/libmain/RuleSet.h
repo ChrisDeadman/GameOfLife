@@ -9,7 +9,7 @@ public:
 
     RuleSet(const RuleSet &that) = delete; // Forbid copying
 
-    const CellState evaluateNewState(CellState currentState, unsigned int aliveNeighbors);
+    CellState evaluateNewState(CellState currentState, unsigned int aliveNeighbors);
 };
 
 #endif //GAMEOFLIFE_RULESET_H

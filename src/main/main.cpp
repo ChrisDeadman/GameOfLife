@@ -6,7 +6,10 @@ const int NUM_ROWS = 108;
 const int NUM_COLUMNS = 192;
 
 int main(int argc, char *argv[]) {
-    SDL_LogSetAllPriority(SDL_LOG_PRIORITY_VERBOSE);
+    if (argc < 1) {
+        return -1;
+    }
+    SDL_LogSetAllPriority(SDL_LOG_PRIORITY_INFO);
 
     string fontFilePath(argv[0]);
     fontFilePath = fontFilePath.substr(0, fontFilePath.find_last_of("/\\"));

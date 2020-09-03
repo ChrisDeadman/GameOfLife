@@ -22,7 +22,7 @@ public:
 
     const shared_ptr<Matrix2D<CellState>> getCellStates();
 
-    const unsigned int getAliveNeighbors(int row, int column);
+    unsigned int getAliveNeighbors(int row, int column);
 
     void randomize(long seed);
 };

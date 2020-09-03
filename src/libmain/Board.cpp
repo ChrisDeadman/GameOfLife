@@ -9,8 +9,8 @@ Board::Board(const unsigned int rows, const unsigned int columns) :
         columns(columns),
         cellStates(make_shared<Matrix2D<CellState>>(rows, columns)) {
 
-    for (int row = 0; row < this->rows; row++) {
-        for (int column = 0; column < this->columns; column++) {
+    for (unsigned int row = 0; row < this->rows; row++) {
+        for (unsigned int column = 0; column < this->columns; column++) {
             this->cellStates->setValue(row, column, dead);
         }
     }
@@ -20,7 +20,7 @@ const shared_ptr<Matrix2D<CellState>> Board::getCellStates() {
     return this->cellStates;
 }
 
-const unsigned int Board::getAliveNeighbors(const int row, const int column) {
+unsigned int Board::getAliveNeighbors(const int row, const int column) {
     const int neighbors[][2] = {{row - 1, column - 1},
                                 {row - 1, column + 1},
                                 {row - 1, column},
@@ -36,11 +36,11 @@ const unsigned int Board::getAliveNeighbors(const int row, const int column) {
         int r = neighbor[0];
         int c = neighbor[1];
 
-        if ((r < 0 || r >= this->rows) ||
-            (c < 0 || c >= this->columns)) {
+        if ((r < 0 || (unsigned int)r >= this->rows) ||
+            (c < 0 || (unsigned int)c >= this->columns)) {
             continue;
         }
-        if (this->cellStates->getValue(r, c) == alive) {
+        if (this->cellStates->getValue((unsigned int)r, (unsigned int)c) == alive) {
             ++aliveNeighbors;
         }
     }
@@ -54,8 +54,8 @@ void Board::randomize(long seed) {
     // uniform distribution >= 0 and <= 1
     uniform_int_distribution<> dis(0, 1);
 
-    for (int row = 0; row < rows; ++row) {
-        for (int column = 0; column < columns; ++column) {
+    for (unsigned int row = 0; row < rows; ++row) {
+        for (unsigned int column = 0; column < columns; ++column) {
             auto state = dis(gen) > 0 ? alive : dead;
             this->cellStates->setValue(row, column, state);
         }

@@ -28,7 +28,7 @@ public:
     explicit WorkerPool(unsigned int numWorkers) :
             threads(),
             backlog() {
-        for (auto worker = 0; worker < numWorkers; worker++) {
+        for (unsigned int worker = 0; worker < numWorkers; worker++) {
             threads.emplace_back([this]() {
                 do {
                     unique_lock<mutex> lock(lockObj);
@@ -65,16 +65,14 @@ public:
     }
 
     void parallel_for(const unsigned int start, const unsigned int end, const function<void(unsigned int, unsigned int)> work) {
-        auto numWorkers = this->threads.size();
+        auto numWorkers = (unsigned int)this->threads.size();
         auto numValues = (end - start) + 1;
         auto increment = (unsigned int) ceil(numValues / (float) numWorkers);
-        auto workCount = 0;
-        auto finishedCount = 0;
 
         Barrier workFinished(numWorkers);
 
         unique_lock<mutex> lock(this->lockObj);
-        for (auto worker = 0; worker < numWorkers; worker++) {
+        for (unsigned int worker = 0; worker < numWorkers; worker++) {
             this->backlog.emplace([worker, &increment, &end, &work, &workFinished]() {
                 auto current = (worker * increment);
                 if (current <= end) {

@@ -28,8 +28,8 @@ void World::tick() {
     auto columns = currentCellStates->getColumns();
 
     this->workerPool->parallel_for(0U, rows, [&](unsigned int firstRow, unsigned int nextRow) {
-        for (int row = firstRow; row < nextRow; row++) {
-            for (int col = 0; col < columns; col++) {
+        for (unsigned int row = firstRow; row < nextRow; row++) {
+            for (unsigned int col = 0; col < columns; col++) {
                 auto aliveNeighbors = this->currentBoard->getAliveNeighbors(row, col);
                 auto currentState = currentCellStates->getValue(row, col);
                 auto newState = this->ruleSet->evaluateNewState(currentState, aliveNeighbors);

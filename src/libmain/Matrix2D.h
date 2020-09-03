@@ -19,19 +19,19 @@ public:
 
     Matrix2D(const Matrix2D &that) = delete; // Forbid copying
 
-    const unsigned int getRows() const {
+    unsigned int getRows() const {
         return rows;
     }
 
-    const unsigned int getColumns() const {
+    unsigned int getColumns() const {
         return columns;
     }
 
-    const bool contains(const int row, const int column) const {
-        return (row >= 0) && (row < rows) && (column >= 0) && (column < columns);
+    bool contains(const unsigned int row, const unsigned int column) const {
+        return (row < rows) && (column < columns);
     }
 
-    T &getValue(const int row, const int column) {
+    T &getValue(const unsigned int row, const unsigned int column) {
         if (!contains(row, column)) {
             throw std::out_of_range("row/column out of bounds");
         }
@@ -39,7 +39,7 @@ public:
         return data[(row * columns) + column];
     }
 
-    void setValue(const int row, const int column, const T &value) {
+    void setValue(const unsigned int row, const unsigned int column, const T &value) {
         if (!contains(row, column)) {
             throw std::out_of_range("row/column out of bounds");
         }
